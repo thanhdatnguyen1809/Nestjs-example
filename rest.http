@@ -1,0 +1,10 @@
+POST http://localhost:3000/cats HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Tinny",
+    "age": 20,
+    "breed": "America2"
+}
+
+###
