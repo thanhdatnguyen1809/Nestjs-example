@@ -33,6 +33,9 @@ import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { CacheInterceptor } from 'src/interceptors/cache.interceptor';
 import { TimeoutInterceptor } from 'src/interceptors/timeout.interceptor';
 import { throwError } from 'rxjs';
+import { User } from 'src/user.decorator';
+import { UserEntity } from 'src/cats/dto/user.dto';
+import { Auth } from 'src/auth.decorator';
 
 
 
@@ -46,11 +49,7 @@ export class CatsController {
   @Roles('admin')
   @UseInterceptors(/*CacheInterceptor , */TransformInterceptor)
   findAll() {
-    console.log('this controller');
-    // throw new HttpException({
-    //   status: HttpStatus.FORBIDDEN,
-    //   error: "Something went wrong...",
-    // }, HttpStatus.FORBIDDEN);
+    throw new ForbiddenException()
     return this.catsService.findAll();
     // return throwError(() => new BadRequestException());
   }
@@ -62,10 +61,12 @@ export class CatsController {
   }
 
   @Roles('admin')
+  // @Auth('admin')
   @Post()
   // @UseFilters(new HttpExceptionFilter())
   // @UsePipes(new JoiValidationPipe(createCatSchema))
-  create(@Body() createCatDto: CreateCatDto) {
+  create(@Body() createCatDto: CreateCatDto, @User(new ValidationPipe( { validateCustomDecorators: true } )) user: UserEntity) {
+    console.log(user.username);
     // throw new ForbiddenException();
     this.catsService.create(createCatDto);
     return 'Added successfully';
